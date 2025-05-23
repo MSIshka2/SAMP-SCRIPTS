@@ -1,5 +1,7 @@
 require "lib.moonloader"
 local encoding = require('encoding')
+local sampev = require('samp.events')
+local vector3d = require('vector3d')
 encoding.default = 'CP1251'
 local u8 = encoding.UTF8
 local bitex = require('bitex')
@@ -35,6 +37,39 @@ local checkbox5 = new.bool(MainIni.settings.show_actions_menu)
 local SliderOne = new.int(MainIni.settings.transparent_bg)
 local sizeX, sizeY = getScreenResolution()
 
+local query = {}
+local renderChatBuble = imgui.new.bool()
+local fontSelected = imgui.new.int()
+local fontChanged, fontSizeChanged = false, false
+local fontSlider = imgui.new.int()
+local fadeInSlider = imgui.new.float()
+local fadeOutSlider = imgui.new.float()
+local outlineSizeSlider = imgui.new.float()
+local heightSlider = imgui.new.float()
+
+local pathconfig = getWorkingDirectory() .. "\\config\\customizable.json"
+if not doesFileExist(pathconfig) then
+	createDirectory(getWorkingDirectory() .. "\\config\\")
+    config = {
+        wallhack = false,
+        serverdistance = false,
+        outline = true,
+        outline_size = 0.9,
+        font = 'arial.ttf',
+        fontsize = 15,
+        fade_in = 0.2,
+        fade_out = 0.1,
+        height = 0.26
+    }
+    local file = io.open(pathconfig, "wb")
+	file:write(encodeJson(config))
+    file:flush()
+	file:close()
+else
+    local file = io.open(pathconfig, "rb")
+    config = decodeJson(file:read("*a"))
+end
+
 function main()
 
     if not isSampLoaded() or not isSampfuncsLoaded() then return end
@@ -46,6 +81,10 @@ function main()
 		renderTAB[0] = not renderTAB[0]
     end)
 	
+	sampRegisterChatCommand('ccb', function()
+        renderChatBuble[0] = not renderChatBuble[0]
+    end)
+
 	while true do
 		wait(0)
 		
@@ -59,10 +98,131 @@ function main()
 	
 end
 
+function explode_argb(argb)
+    return bit.band(bit.rshift(argb, 24), 0xFF),
+           bit.band(bit.rshift(argb, 16), 0xFF),
+           bit.band(bit.rshift(argb, 8), 0xFF),
+           bit.band(argb, 0xFF)
+end
+
+function hexToArgb(hexStr)
+    local argb = tonumber(hexStr:gsub("[{}]", ""), 16)
+    return #hexStr == 6 and argb + 0xFF000000 or argb
+end
+
+function imgui.drawColoredTextDL(dl, position, color, text)
+    if not text:find("{") then dl:AddText(position, imgui.ColorConvertFloat4ToU32(color), text) else text = '{ffffff}' .. text end
+    local currentPos = position
+    for hex, part in text:gmatch("{([^}]+)}([^{]*)") do
+        local a, r, g, b = explode_argb(hexToArgb(hex))
+        local vecColor = imgui.ImVec4(r/255, g/255, b/255, color.w)
+        dl:AddText(currentPos, imgui.ColorConvertFloat4ToU32(vecColor), part)
+        currentPos.x = currentPos.x + imgui.CalcTextSize(part).x
+    end
+end
+
+function getNameTagPosForText(handle)
+    local localPlayerPos = vector3d(getActiveCameraCoordinates())
+    local pPlayerPos = vector3d(getBodyPartCoordinates(8, handle))
+    return pPlayerPos.x, pPlayerPos.y, pPlayerPos.z + config.height + (getDistanceBetweenCoords3d(localPlayerPos.x, localPlayerPos.y, localPlayerPos.z, pPlayerPos.x, pPlayerPos.y, pPlayerPos.z) * 0.04)
+end
+
+local getBonePosition = ffi.cast("int (__thiscall*)(void*, float*, int, bool)", 0x5E4280)
+function getBodyPartCoordinates(id, handle)
+    local pedptr = getCharPointer(handle)
+    local vec = ffi.new("float[3]")
+    getBonePosition(ffi.cast("void*", pedptr), vec, id, true)
+    return vec[0], vec[1], vec[2]
+end
+
+function wallPlayer(handle, distance)
+    if doesCharExist(handle) then
+        local camX, camY, camZ = getActiveCameraCoordinates()
+        local x, y, z = getCharCoordinates(handle)
+        local maxDistance = config.serverdistance and distance or 50
+        local withinDistance = getDistanceBetweenCoords3d(camX, camY, camZ, x, y, z) <= maxDistance
+        
+        if not (withinDistance and isCharOnScreen(handle)) then
+            return false
+        end
+        
+        return config.wallhack or isLineOfSightClear(camX, camY, camZ, x, y, z, true, false, false, true, false)
+    end
+end
+
+function getNearestPlayer()
+    local distance, handle = 10000, nil
+    for k, v in pairs(getAllChars()) do
+        if v ~= PLAYER_PED then
+            local x, y, z = getCharCoordinates(PLAYER_PED)
+            local px, py, pz = getCharCoordinates(v)
+            dist = getDistanceBetweenCoords3d(x, y, z, px, py, pz)
+            if dist < distance then
+                distance, handle = dist, v
+            end
+        end
+    end
+    return handle
+end
+
+function sampev.onPlayerChatBubble(playerId, color, distance, duration, message)
+    query[playerId] = nil
+
+    local a, r, g, b = explode_argb(color)
+    query[playerId] = {
+        message = message,
+        create_time = os.clock(),
+        duration = duration / 1000,
+        distance = distance,
+        fade_in = config.fade_in,
+        fade_out = config.fade_out,
+        color = imgui.ImVec4(r/255, g/255, b/255, 0.0),
+        outline_color = imgui.ImVec4(0.0, 0.0, 0.0, 0.0)
+    }
+    
+    return false
+end
+
+function drawOutlinedText(dl, pos, text, text_color, outline_color, outline_size)
+    for x = -outline_size, outline_size, outline_size do
+        for y = -outline_size, outline_size, outline_size do
+            if x ~= 0 or y ~= 0 then
+                local formattedText = text:gsub('{......}', '')
+                dl:AddText(
+                    imgui.ImVec2(pos.x + x, pos.y + y),
+                    imgui.ColorConvertFloat4ToU32(outline_color),
+                    formattedText
+                )
+            end
+        end
+    end
+    imgui.drawColoredTextDL(dl, pos, text_color, text)
+end
+
 imgui.OnInitialize(function()
 
     imgui.GetIO().IniFilename = nil
-	
+	local glyph_ranges = imgui.GetIO().Fonts:GetGlyphRangesCyrillic()
+	imgui.GetIO().Fonts:Clear()
+	local fontPath = ('%s\\%s'):format(getFolderPath(0x14), config.font)
+	imgui.GetIO().Fonts:AddFontFromFileTTF(fontPath, config.fontsize, nil, glyph_ranges)
+	fonts = {}
+	fontsArray = {}
+	local search, file = findFirstFile(getFolderPath(0x14) .. '\\*.ttf') -- https://www.blast.hk/threads/42895/
+	while file do 
+		table.insert(fonts, file)
+		file = findNextFile(search)
+	end
+
+    fontsArray = imgui.new['const char*'][#fonts](fonts)
+    fontSlider[0], fadeInSlider[0], fadeOutSlider[0], outlineSizeSlider[0], heightSlider[0] = config.fontsize, config.fade_in, config.fade_out, config.outline_size, config.height
+    for k, v in pairs(fonts) do
+        if v == config.font then
+            fontSelected[0] = k - 1
+        end
+    end
+
+
 	fa.Init(14 )
 	
     if MainIni.settings.main_theme == 1 then
@@ -97,15 +257,143 @@ imgui.OnInitialize(function()
 	
 end)
 
+local menu = imgui.OnFrame(
+    function() return renderChatBuble[0] end,
+    function(player1)
+        local resX, resY = getScreenResolution()
+        local sizeX, sizeY = 300, 350
+        imgui.SetNextWindowPos(imgui.ImVec2(resX / 2, resY / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))
+        imgui.SetNextWindowSize(imgui.ImVec2(sizeX, sizeY), imgui.Cond.FirstUseEver)
+        if imgui.Begin('customizable chatbubbles', renderChatBuble, imgui.WindowFlags.NoResize) then
+            if imgui.RadioButtonBool('WallHack', config.wallhack) then config.wallhack = not config.wallhack end
+            imgui.SameLine()
+            if imgui.RadioButtonBool('Обводка', config.outline) then config.outline = not config.outline end
+            if imgui.RadioButtonBool('Рендер на серверном расстоянии', config.serverdistance) then config.serverdistance = not config.serverdistance end
+            if imgui.Combo('Шрифт', fontSelected, fontsArray, #fonts) then
+                fontChanged = true
+            end
+            if imgui.SliderInt('Размер', fontSlider, 0, 24) then
+                fontSizeChanged = true
+            end
+            if imgui.SliderFloat('Появление', fadeInSlider, 0.0, 1.0) then
+                config.fade_in = fadeInSlider[0]
+            end
+            if imgui.SliderFloat('Скрытие', fadeOutSlider, 0.0, 1.0) then
+                config.fade_out = fadeOutSlider[0]
+            end
+            if imgui.SliderFloat('Обводка##', outlineSizeSlider, 0.0, 2.0) then
+                config.outline_size = outlineSizeSlider[0]
+            end
+            if imgui.SliderFloat('Высота', heightSlider, 0.0, 1.0) then
+                config.height = heightSlider[0]
+            end
+            if imgui.Button('Тест на ближайшем игроке') then
+                local nearstPlayer = getNearestPlayer()
+                local res, id = sampGetPlayerIdByCharHandle(nearstPlayer)
+                query[id] = nil
+                query[id] = {
+                    message = u8:decode('Тестовый чат бабл.'),
+                    create_time = os.clock(),
+                    duration = 3000 / 1000,
+                    fade_in = config.fade_in,
+                    fade_out = config.fade_out,
+                    color = imgui.ImVec4(1.0, 1.0, 1.0, 0.0),
+                    outline_color = imgui.ImVec4(0.0, 0.0, 0.0, 0.0)
+                }
+            end
+            imgui.Text('author: Harry')
+            imgui.SameLine(200)
+            imgui.End()
+        end
+    end
+)
+
+local chatbubbles = imgui.OnFrame(
+    function() return true end,
+    function (player3)
+        if fontChanged then
+            fontChanged = false
+            local glyphRanges = imgui.GetIO().Fonts:GetGlyphRangesCyrillic()
+            local fontPath = ('%s\\%s'):format(getFolderPath(0x14), fonts[fontSelected[0] + 1])
+            imgui.GetIO().Fonts:Clear()
+            imgui.GetIO().Fonts:AddFontFromFileTTF(fontPath, fontSlider[0], nil, glyphRanges)
+            -- Font texture invalidation forces the font texture to rebuild. It is necessary after font modifications
+            imgui.InvalidateFontsTexture()
+            config.font = fonts[fontSelected[0] + 1]
+        end
+        if fontSizeChanged then
+            fontSizeChanged = false
+            local fonts = imgui.GetIO().Fonts.ConfigData
+            for i = 0, fonts:size() - 1 do
+                fonts.Data[i].SizePixels = fontSlider[0]
+            end
+            imgui.GetIO().Fonts:ClearTexData()
+            imgui.InvalidateFontsTexture()
+            config.fontsize = fontSlider[0]
+        end
+    end,
+    function(self)
+        self.HideCursor = true
+        local dl = imgui.GetBackgroundDrawList()
+        local current_time = os.clock()
+
+        for playerId, data in pairs(query) do
+            local elapsed = current_time - data.create_time
+            local remaining = data.duration - elapsed
+
+            if elapsed < data.fade_in then
+                local progress = elapsed / data.fade_in
+                data.color.w = progress
+                data.outline_color.w = progress * 0.7
+            elseif remaining < data.fade_out then
+                local progress = remaining / data.fade_out
+                data.color.w = progress
+                data.outline_color.w = progress * 0.7
+            else
+                data.color.w = 1.0
+                data.outline_color.w = 0.7
+            end
+
+            if elapsed > data.duration then
+                query[playerId] = nil
+            else
+                local res, handle = sampGetCharHandleBySampPlayerId(tonumber(playerId))
+                if wallPlayer(handle, data.distance) then
+                    if not sampIsCursorActive() or sampIsChatInputActive() then
+                        local x, y, z = getNameTagPosForText(handle)
+                        local pos = imgui.ImVec2(convert3DCoordsToScreen(x, y, z))
+                        local flength = data.message:gsub('{......}', '')
+                        local length = (imgui.CalcTextSize(u8(flength)).x) / 2 - 1
+                        local text_pos = imgui.ImVec2(pos.x - length, pos.y - 25)
+                        
+                        if config.outline then
+                            drawOutlinedText(
+                                dl,
+                                text_pos,
+                                u8(data.message),
+                                data.color,
+                                data.outline_color,
+                                config.outline_size
+                            )
+                        else
+                            imgui.drawColoredTextDL(dl, text_pos, data.color, u8(data.message))
+                        end
+                    end
+                end
+            end
+        end
+    end
+)
+
+
 local Scoreboard = imgui.OnFrame(
     function() return renderTAB[0] end,
     function(player)
 	
 		imgui.GetStyle().ScrollbarSize = 10 
-		
 		imgui.SetNextWindowPos(imgui.ImVec2(sizeX / 2, sizeY / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))
 		imgui.SetNextWindowSize(imgui.ImVec2(800 , 573 ), imgui.Cond.FirstUseEver)
-		imgui.Begin("##Begin", renderTAB, imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize + imgui.WindowFlags.NoTitleBar + imgui.WindowFlags.NoMove )
+		imgui.Begin("##Begin1", renderTAB, imgui.WindowFlags.NoCollapse + imgui.WindowFlags.NoResize + imgui.WindowFlags.NoTitleBar + imgui.WindowFlags.NoMove )
 		
 		imgui.GetStyle().FrameRounding = 5.0 
 		if imgui.Button(fa.GEAR) then	
@@ -171,7 +459,7 @@ local Scoreboard = imgui.OnFrame(
 	
 		imgui.Separator()
 
-		if imgui.BeginChild('##binder_edit', imgui.ImVec2(790 , 528 ), false) then
+		if imgui.BeginChild('##binder_edit1', imgui.ImVec2(790 , 528 ), false) then
 
 
 			if MainIni.settings.show_actions_menu then
