@@ -221,7 +221,7 @@ function main()
     while not webcore.inited() do wait(100) end
 
 -- Создание браузера
-    browser3 = webcore:create_fullscreen("file:///cef/inventory/index.html")
+    browser3 = webcore:create_fullscreen("file:///moonloader/cef/inventory/index.html")
     browser3:set_active(false)
 
     browser3:set_create_cb(function(_)
