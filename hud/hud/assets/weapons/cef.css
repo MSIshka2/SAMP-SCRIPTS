@@ -1,0 +1,143 @@
+.name_server {
+  text-transform: uppercase;
+  color: #fff;
+  font-family: 'Montserrat';
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  font-size: 28px;
+  margin-right: 20px;
+  margin-top: 15px;
+  text-align: right;
+}
+.two_name_server {
+  color: #fff;
+  font-family: 'Montserrat';
+  font-size: 12px;
+  margin-top: -18px;
+  font-weight: 600;
+  text-align: right;
+  margin-right: 55px;
+}
+.img_name {
+  /*position: absolute;
+  margin-left: 87%;
+  margin-top: -19px;*/
+  position: relative;
+  left: 150px;
+  margin-top: -25px;
+}
+.logo_server {
+  margin-top: -95px;
+  margin-right: 130px;
+}
+.heart_hud {
+  fill: #E32636;
+  width: 20px;
+  margin-left: auto;
+  margin-right: 210px;
+  top: -5px;
+  position: relative;
+}
+svg.heart_hud {
+  margin-right: 60px;
+}
+progress.health_bar {
+  position: relative;
+  margin-left: 35px;
+  top: -26px;
+  border-radius: 8px;
+  height: 8px;
+  width: 180px;
+  -webkit-appearance: none;
+}
+progress.health_bar::-webkit-progress-bar {
+    background-color: rgba(82, 82, 82, 0.50);
+    border-radius: 8px;
+}
+progress.health_bar::-webkit-progress-value {
+    background-color: #E32636;
+    background-image: #E32636;
+    border-radius: 8px;
+}
+progress.health_bar::-moz-progress-bar {
+    background-color: #E32636;
+    background-image: #E32636;
+    border-radius: 8px;
+}
+.shield_hud {
+  fill: #0095B6;
+  width: 20px;
+  margin-left: auto;
+  margin-right: 210px;
+  top: -15px;
+  position: relative;
+}
+progress.shield_bar {
+  position: relative;
+  margin-left: 35px;
+  top: -26px;
+  border-radius: 8px;
+  height: 8px;
+  width: 180px;
+}
+progress.shield_bar::-webkit-progress-bar {
+    background-color: rgba(82, 82, 82, 0.50);
+    border-radius: 8px;
+}
+progress.shield_bar::-webkit-progress-value {
+    background-color: #0095B6;
+    background-image: #0095B6;
+    border-radius: 8px;
+}
+progress.shield_bar::-moz-progress-bar {
+    background-color: #0095B6;
+    background-image: #0095B6;
+    border-radius: 8px;
+}
+.weapon_block {
+  display: absolute;
+  margin-left: auto;
+  margin-top: -95px;
+  margin-right: 240px;
+  width: 65px;
+  height: 65px;
+  background-color: rgba(0,0,0,0.25);
+  border-radius: 8px;
+}
+.weapon_hud {
+  position: absolute;
+  width: 50px;
+  margin-left: 9px;
+  margin-top: 6px;
+}
+.rep_block {
+  position: relative;
+  margin-left: auto;
+  text-align: right;
+  margin-top: -10px;
+}
+.reputation_count {
+  color: #fff;
+  font-size: 22px;
+  font-family: 'Montserrat';
+  font-weight: 700;
+  margin-right: 15px;
+}
+.name_vip {
+  position: relative;
+  margin-left: 35px;
+  margin-top: -34px;
+  color: #fff;
+  font-family: 'Montserrat';
+  font-size: 24px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.img_vip {
+  max-width: 30px;
+}
+.premium {
+	display: block;
+	margin-left: 40px;
+	margin-top: 28%;
+}
