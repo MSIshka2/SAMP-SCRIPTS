@@ -995,7 +995,7 @@ imgui.OnFrame(
                 " slot=" .. BUBBLE_SLOT_W .. "x" .. BUBBLE_SLOT_H ..
                 " gap=" .. BUBBLE_SLOT_GAP)
 
-            browser = webcore:create_fullscreen("file:///moonloader/chatbubbles/chatbubbles.html")
+            browser = webcore:create_fullscreen("file:///moonloader/cef/chatbubble/chatbubbles.html")
             pcall(function() browser:set_offscreen(true) end)
             pcall(function() browser:set_input(false) end)
 
