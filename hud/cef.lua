@@ -133,7 +133,7 @@ function main()
 
     while not webcore.inited() do wait(100) end
 
-    browser = webcore:create_fullscreen("file:///cef/hud/hud.html")
+    browser = webcore:create_fullscreen("file:///moonloader/cef/hud/hud.html")
 
     browser:set_loading_cb(function(_, status)
     end)
