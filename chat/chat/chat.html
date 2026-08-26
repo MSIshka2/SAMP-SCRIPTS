@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHAT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" type="text/css" href="chat.css">
+</head>
+
+<body style='overflow-x:hidden;'>
+    <div id="chat-logs-container"></div>
+    <div id="mediaModal" class="media-modal" onclick="closeMediaModal()">
+        <div class="media-modal-content" onclick="event.stopPropagation()">
+            <span class="media-close" onclick="closeMediaModal()">&times;</span>
+            <div id="mediaContainer"></div>
+        </div>
+    </div>
+    <div class="input-container">
+        <input id="chat-input" class="chat-input" type="text" placeholder="Напишите сообщение...">
+        <div id="lang" class="input-language" title="Сменить язык (RU/EN)">RU</div>
+    </div>
+    <div id="calculation-result" class="calculation-result"></div>
+    <div id="logMessage" class="logMessage">
+        <img src="https://cdn-icons-png.flaticon.com/128/6785/6785368.png">
+        <h1 id="zagl" class="zagl">Текст заголовка</h1>
+        <br/>
+        <h2 id="textMessage" class="textMessage">Текст сообщения</h2>
+    </div>
+
+    <div id="emoji-menu" class="emoji-menu">
+        <div class="emoji-header">Выберите пак эмодзи:</div>
+        
+        <div class="emoji-container">
+            <div class="tabs-container">
+            </div>
+            
+            <div class="content-container">
+            </div>
+        </div>
+    </div>
+
+    
+    <div id="contextMenu" class="context-menu">
+        <button class="context-menu-item reply-to-message" id="replyToMessage">
+            Отправить
+        </button>
+        <button class="context-menu-item copy-selected" id="copySelected">
+            Копировать выделенное
+        </button>
+        <button class="context-menu-item copy-line" id="copyLine">
+            Копировать строку целиком
+        </button>
+        <button class="context-menu-text-item copy-color" id="copyColor">
+            Копировать цвет
+        </button>
+    </div>
+
+    <div id="contextMenuText" class="context-menu-text">
+        <button class="context-menu-text-item bold" id="bold">
+            Жирный текст
+        </button>
+        <button class="context-menu-text-item italic" id="italic">
+            Курсив
+        </button>
+    </div>
+    
+    <script src="chat.js"></script>
+</body>
+
+</html>
