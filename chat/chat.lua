@@ -654,7 +654,7 @@ imgui.OnFrame(
         if not initDone and hasWebcore and webcore.inited() then
             initDone = true
 
-            browser2 = webcore:create_fullscreen("file:///moonloader/chat/chat.html")
+            browser2 = webcore:create_fullscreen("file:///moonloader/cef/chat/chat.html")
             pcall(function() browser2:set_offscreen(true) end)
             pcall(function() browser2:set_input(false) end)
 
