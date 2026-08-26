@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Контейнер игрока -->
+        <div class="player-container">
+            <div class="player-name">Nick_Nick</div>
+
+            <img src="https://upload.wikimedia.org/wikipedia/ru/a/a7/Head.cj.jpg" alt="Аватар игрока" class="player-avatar">
+
+            <div class="stats-container">
+                <div class="stat-item">
+                    <span class="progress-text1"></span>
+                </div>
+
+                <div class="stat-item">
+                    <span class="progress-text2"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Контейнер инвентаря -->
+        <div class="inventory-container">
+            <div class="inventory-title">Инвентарь</div>
+            <div class="inventory-grid" id="inventory-grid"></div>
+            <div class="inventory-info">
+                Свободно ячеек: <span id="free-cells-count">60</span>
+            </div>
+        </div>
+
+        <div id="contextMenu" class="context-menu">
+            <div class="context-menu-title">Информация о предмете</div>
+            <div class="context-menu-item-name" id="itemName">Название предмета</div>
+            <div class="context-menu-description" id="itemDescription">Описание предмета будет отображено здесь</div>
+            <div class="context-menu-buttons">
+                <button class="context-menu-btn primary" id="contextBtn1">Кнопка 1</button>
+                <button class="context-menu-btn danger" id="contextBtn2">Кнопка 2</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

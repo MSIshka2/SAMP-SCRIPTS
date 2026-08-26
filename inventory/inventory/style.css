@@ -1,0 +1,393 @@
+/* === ОБЩИЕ СТИЛИ === */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Open Sans", sans-serif;
+    background: rgba(0, 0, 0, 0.5);
+    min-height: 100vh;
+    padding: 20px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#app {
+    position: relative;
+    width: 50%;
+    height: calc(100vh - 40px);
+    display: flex;
+    gap: 20px;
+}
+
+
+/* === КОНТЕЙНЕР ИГРОКА === */
+
+.player-container {
+    position: relative;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    width: 200px;
+    height: 300px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.player-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.player-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    margin-bottom: 15px;
+    object-fit: cover;
+}
+
+.stats-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stat-icon {
+    width: 20px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.stat-icon.health {
+    color: #ff4757;
+}
+
+.stat-icon.armor {
+    color: #3742fa;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 12px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.progress-fill.health {
+    background: linear-gradient(90deg, #ff4757, #ff6b7a);
+}
+
+.progress-fill.armor {
+    background: linear-gradient(90deg, #3742fa, #5352ed);
+}
+
+.progress-text1 {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.progress-text2 {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 85%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+
+/* === КОНТЕЙНЕР ИНВЕНТАРЯ === */
+
+.inventory-container {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 15px;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.inventory-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 10px;
+    flex: 1;
+    align-content: start;
+}
+
+.inventory-cell {
+    aspect-ratio: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.1s ease;
+    cursor: pointer;
+}
+
+.inventory-cell:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+.inventory-cell.filled {
+    background: rgba(46, 204, 113, 0.3);
+    border-color: #2ecc71;
+}
+
+.item-text {
+    font-size: 10px;
+    text-align: center;
+    word-break: break-word;
+    padding: 2px;
+    color: white;
+    text-shadow: 1px 1px 2px black;
+}
+
+.item-image {
+    max-width: 70%;
+    max-height: 70%;
+    object-fit: contain;
+}
+
+.item-quantity {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 4px;
+    border-radius: 4px;
+    min-width: 16px;
+    text-align: center;
+}
+
+.item-name-tooltip {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 3px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.inventory-cell:hover .item-name-tooltip {
+    opacity: 1;
+}
+
+
+/* === АДАПТИВНОСТЬ === */
+
+@media (max-width: 768px) {
+    #app {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .player-container {
+        width: 100%;
+        height: auto;
+        min-height: 200px;
+    }
+    .inventory-container {
+        height: 400px;
+    }
+    .inventory-grid {
+        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+        gap: 8px;
+    }
+}
+
+
+/* === КОНТЕКСТНОЕ МЕНЮ === */
+
+.context-menu {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 15px;
+    min-width: 300px;
+    max-width: 400px;
+    z-index: 9999;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: none;
+    animation: contextMenuAppear 0.2s ease-out;
+}
+
+.context-menu.show {
+    display: block;
+}
+
+.context-menu-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 8px;
+}
+
+.context-menu-item-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4ecdc4;
+    margin-bottom: 8px;
+}
+
+.context-menu-description {
+    font-size: 12px;
+    color: #ccc;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    text-align: justify;
+}
+
+.context-menu-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.context-menu-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: white;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.context-menu-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.context-menu-btn:active {
+    transform: translateY(0);
+}
+
+.context-menu-btn.primary {
+    background: rgba(46, 204, 113, 0.3);
+    border-color: #2ecc71;
+}
+
+.context-menu-btn.primary:hover {
+    background: rgba(46, 204, 113, 0.5);
+}
+
+.context-menu-btn.danger {
+    background: rgba(231, 76, 60, 0.3);
+    border-color: #e74c3c;
+}
+
+.context-menu-btn.danger:hover {
+    background: rgba(231, 76, 60, 0.5);
+}
+
+
+/* === АНИМАЦИИ === */
+
+.player-container,
+.inventory-container {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes contextMenuAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
