@@ -1,0 +1,610 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    background: transparent;
+}
+
+.hud {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 20px;
+    z-index: 100;
+}
+
+.server-header {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%);
+    padding: 15px 25px;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    margin-bottom: 20px;
+    animation: slideInRight 0.6s ease;
+}
+
+.server-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.server-logo img {
+    width: 200%;
+    height: 200%;
+    object-fit: contain;
+}
+
+.server-info {
+    flex: 1;
+}
+
+.server-name {
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    margin-bottom: 2px;
+}
+
+.server-subtitle {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.status-icon {
+    width: 16px;
+    height: 16px;
+}
+
+
+.stats-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    animation: slideInRight 0.6s ease 0.1s backwards;
+}
+
+.stat-bar {
+    background: rgba(0,0,0,0.5);
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.stat-bar:hover {
+    background: rgba(0,0,0,0.6);
+    transform: translateX(-5px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.stat-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.stat-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.progress-container {
+    flex: 1;
+    position: relative;
+}
+
+.progress-bg {
+    width: 180px;
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+.health-fill {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+    box-shadow: 0 0 10px rgba(239,68,68,0.5);
+}
+
+.armor-fill {
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+    box-shadow: 0 0 10px rgba(59,130,246,0.5);
+}
+
+.oxygen-fill {
+    background: linear-gradient(90deg, #06b6d4, #0891b2);
+    box-shadow: 0 0 10px rgba(6,182,212,0.5);
+}
+
+.stamina-fill {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+    box-shadow: 0 0 10px rgba(34,197,94,0.5);
+}
+
+
+.weapon-display {
+    position: fixed;
+    top: 150px;
+    right: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    animation: slideInRight 0.6s ease 0.2s backwards;
+}
+
+.weapon-icon-container {
+    width: 80px;
+    height: 80px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 15px;
+    border: 2px solid rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.weapon-icon-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: rotate(45deg);
+    animation: weaponGlow 3s infinite;
+}
+
+.weapon-icon {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
+}
+
+.ammo-count {
+    background: rgba(0,0,0,0.6);
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    min-width: 70px;
+    text-align: center;
+}
+
+.currency-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: slideInRight 0.6s ease 0.3s backwards;
+}
+
+.currency-item {
+    background: rgba(0,0,0,0.5);
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 18px;
+    font-weight: 700;
+    text-align: right;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.currency-item:hover {
+    transform: translateX(-5px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.money {
+    color: #22c55e;
+    text-shadow: 0 0 10px rgba(34,197,94,0.5);
+}
+
+.reputation {
+    color: #3b82f6;
+    text-shadow: 0 0 10px rgba(59,130,246,0.5);
+}
+
+.premium-badge {
+    position: absolute;
+    bottom: 25%;
+    left: 13.3%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+    box-shadow: 0 4px 15px rgba(251,191,36,0.4);
+    display: none;
+    animation: fadeInScale 0.5s ease;
+}
+
+.speedometer-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    animation: fadeInScale 0.5s ease;
+}
+
+.speedometer {
+    width: 220px;
+    height: 220px;
+    position: relative;
+}
+
+.speedo-circle {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(30,30,50,0.9) 0%, rgba(10,10,20,0.95) 100%);
+    border: 3px solid rgba(255,255,255,0.15);
+    box-shadow: 
+        0 10px 40px rgba(0,0,0,0.6),
+        inset 0 0 40px rgba(0,0,0,0.8),
+        inset 0 5px 20px rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+
+.speedo-marks {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.speed-mark {
+    position: absolute;
+    width: 2px;
+    height: 10px;
+    background: rgba(255,255,255,0.25);
+    top: 12px;
+    left: 50%;
+    transform-origin: 50% 98px;
+    transition: background 0.2s ease;
+}
+
+.speed-mark.major {
+    height: 15px;
+    width: 3px;
+    background: rgba(255,255,255,0.4);
+}
+
+.speed-mark.active {
+    background: linear-gradient(to bottom, #ef4444, #dc2626);
+    box-shadow: 0 0 6px rgba(239,68,68,0.6);
+}
+
+
+.inner-ring {
+    position: absolute;
+    width: 85%;
+    height: 85%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(20,20,35,0.8) 0%, transparent 70%);
+    border: 2px solid rgba(255,255,255,0.08);
+}
+
+
+.speed-display {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+}
+
+.speed-value {
+    font-size: 52px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 
+        0 0 15px rgba(255,255,255,0.3),
+        0 0 30px rgba(239,68,68,0.2);
+    line-height: 1;
+    letter-spacing: -2px;
+}
+
+.speed-unit {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 5px;
+}
+
+
+.speedo-needle {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-bottom: 80px solid #ef4444;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    transform: translateX(-50%) rotate(-135deg);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 0 10px rgba(239,68,68,0.7));
+    z-index: 5;
+}
+
+.speedo-needle::before {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 25px;
+    background: linear-gradient(to bottom, #fff, #ef4444);
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.speedo-center {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: radial-gradient(circle, #fff 0%, #ef4444 100%);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 
+        0 0 15px rgba(239,68,68,0.9),
+        inset 0 2px 5px rgba(255,255,255,0.5);
+    z-index: 15;
+    border: 2px solid rgba(0,0,0,0.3);
+}
+
+.speedo-center::after {
+    content: '';
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    background: #fff;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.glow-effect {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, 
+        rgba(239,68,68,0.15) 0%, 
+        transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.vehicle-controls {
+    display: flex;
+    gap: 15px;
+    background: rgba(0,0,0,0.5);
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.vehicle-indicator {
+    width: 35px;
+    height: 35px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.vehicle-indicator svg {
+    width: 18px;
+    height: 18px;
+    fill: rgba(255,255,255,0.4);
+    transition: fill 0.3s ease;
+}
+
+.clock-container {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    background: rgba(0,0,0,0.5);
+    padding: 15px 25px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    animation: fadeInScale 0.5s ease;
+}
+
+.clock-time {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    line-height: 1.5;
+    white-space: pre-line;
+    text-align: center;
+}
+
+.notification {
+    position: fixed;
+    bottom: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.85);
+    padding: 20px 30px;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-width: 350px;
+    transition: bottom 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 1000;
+}
+
+.notification.show {
+    bottom: 50px;
+}
+
+.notification-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.notification-icon img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+.notification-icon.info {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.notification-icon.success {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.notification-icon.error {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.notification-text {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.4;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+@keyframes weaponGlow {
+    0%, 100% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+}
