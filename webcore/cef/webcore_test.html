@@ -1,0 +1,55 @@
+<html>
+
+<head>
+	<meta http-equiv="Permissions-Policy" content="interest-cohort=()"/>
+	<title>Тестовая страница WebCore (заголовок)</title>
+</head>
+
+<body>
+
+<h1>Тестовая страница WebCore</h1>
+<p>Здесь можно написать в чат:</p>
+
+<input id="1"></input>
+<button onclick="on_click_1()">Отправить</button>
+
+<p>А здесь можно посчитать:</p>
+
+<input id="2"></input>
+<button onclick="on_click_2()">Отправить</button>
+
+<p>Танцующий бомж:</p>
+
+<image onclick="on_click_3()" id="3" src="https://redcodepro.github.io/webcore/bomj_0.gif" role="button" />
+
+<script>
+	function on_click_1() {
+		cef.add_chat('' + document.getElementById('1').value, 0xFFFFFFFF)
+	}
+	
+	function on_click_2() {
+		let val
+		try {
+			val = eval(document.getElementById('2').value)
+			cef.add_chat('result: {ffffff}' + val, 0xFF00FF00)
+		}
+		catch (e) {
+			cef.add_chat('error: {ffffff}' + e.message, 0xFFFF0000)
+		}
+	}
+	
+	function on_click_3() {
+		let variants = [ "не мешай!", "понравился танец?", "я занят", "хочешь также?", "иди нахуй!", "я танцую", "потанцуем?", "смотри как могу", "не приставай ко мне!", "что ты хотел?" ]
+		let variant = variants[Math.floor(Math.random() * variants.length)]
+		cef.add_chat('бомж: {ffffff}' + variant, 0xFF915C4C)
+		
+		if (Math.random() < 0.3) {
+			let num = Math.floor(Math.random() * 5)
+			document.getElementById('3').src = `https://redcodepro.github.io/webcore/bomj_${num}.gif`
+		}
+	}
+</script>
+
+</body>
+
+</html>
